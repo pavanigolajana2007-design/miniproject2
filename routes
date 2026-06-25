@@ -1,0 +1,120 @@
+const express = require("express");
+const router = express.Router();
+
+const GymMember = require("../models/gym");
+
+// CREATE MEMBER
+router.post("/", async (req, res) => {
+  try {
+    const member = await GymMember.create(req.body);
+
+    res.status(201).json({
+      success: true,
+      data: member,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// GET ALL MEMBERS
+router.get("/", async (req, res) => {
+  try {
+    const members = await GymMember.find();
+
+    res.status(200).json({
+      success: true,
+      count: members.length,
+      data: members,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// GET SINGLE MEMBER
+router.get("/:id", async (req, res) => {
+  try {
+    const member = await GymMember.findById(req.params.id);
+
+    if (!member) {
+      return res.status(404).json({
+        success: false,
+        message: "Member not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: member,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// UPDATE MEMBER
+router.put("/:id", async (req, res) => {
+  try {
+    const member = await GymMember.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!member) {
+      return res.status(404).json({
+        success: false,
+        message: "Member not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: member,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// DELETE MEMBER
+router.delete("/:id", async (req, res) => {
+  try {
+    const member = await GymMember.findByIdAndDelete(req.params.id);
+
+    if (!member) {
+      return res.status(404).json({
+        success: false,
+        message: "Member not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Member deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+module.exports = router;
