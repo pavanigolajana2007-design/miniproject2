@@ -1,0 +1,52 @@
+const mongoose = require("mongoose");
+
+const gymSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+
+    age: {
+      type: Number,
+      required: true,
+    },
+
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Other"],
+    },
+
+    phone: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
+    email: {
+      type: String,
+      unique: true,
+    },
+
+    membershipType: {
+      type: String,
+      enum: ["Monthly", "Quarterly", "Yearly"],
+      required: true,
+    },
+
+    joiningDate: {
+      type: Date,
+      default: Date.now,
+    },
+
+    feesPaid: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+module.exports = mongoose.model("GymMember", gymSchema);
